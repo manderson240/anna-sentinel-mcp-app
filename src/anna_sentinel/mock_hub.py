@@ -14,23 +14,12 @@ from typing import Any
 
 def evaluate_claims_mock(claims: list[dict[str, Any]], threshold: float = 0.85) -> dict[str, Any]:
     """Evaluate discrete claims deterministically."""
-    if not claims:
-        return {
-            "score": 1.0,
-            "passed": True,
-            "total_claims": 0,
-            "supported_claims": 0,
-            "claims": [],
-        }
-
-    supported_count = sum(1 for c in claims if bool(c.get("supported", False)))
     total = len(claims)
-    score = round(supported_count / total, 4)
-    passed = score >= threshold
-
+    supported_count = sum(1 for c in claims if bool(c.get("supported", False)))
+    score = round(supported_count / total, 4) if total > 0 else 1.0
     return {
         "score": score,
-        "passed": passed,
+        "passed": score >= threshold,
         "total_claims": total,
         "supported_claims": supported_count,
         "claims": claims,

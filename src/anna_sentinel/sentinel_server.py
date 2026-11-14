@@ -17,11 +17,8 @@ from anna_sentinel.a2ui_renderer import render_sentinel_surface
 from anna_sentinel.mock_hub import evaluate_claims_mock, generate_attestation_receipt
 from anna_sentinel.verifier_ast import audit_source
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s [sentinel] %(message)s", stream=sys.stderr)
 log = logging.getLogger("anna.sentinel")
-_handler = logging.StreamHandler(sys.stderr)
-_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s [sentinel] %(message)s"))
-log.addHandler(_handler)
-log.setLevel(logging.INFO)
 
 JSONRPC_VERSION = "2.0"
 
