@@ -34,12 +34,35 @@ All critical protocol invariants have been mathematically formulated into a Depe
 
 ```mermaid
 flowchart TD
-    ROOT["Root Protocol Invariants"] --> LEMMA_ANNA_1["AST Execution Sandbox Invariant"]
-    LEMMA_ANNA_1["AST Execution Sandbox Invariant"] --> LEMMA_ANNA_2["Discrete QAG Bounded Evaluation"]
-    LEMMA_ANNA_2["Discrete QAG Bounded Evaluation"] --> LEMMA_ANNA_3["A2UI Surface Declarative State Containment"]
-    LEMMA_ANNA_1["AST Execution Sandbox Invariant"] --> LEMMA_ANNA_4["MCP Protocol Conformance & Zero Regression"]
-    LEMMA_ANNA_2["Discrete QAG Bounded Evaluation"] --> LEMMA_ANNA_4["MCP Protocol Conformance & Zero Regression"]
-    LEMMA_ANNA_3["A2UI Surface Declarative State Containment"] --> LEMMA_ANNA_4["MCP Protocol Conformance & Zero Regression"]
+    subgraph Foundation["Formal Verification Foundation (arXiv:2609.15983)"]
+        ROOT["Root Protocol Invariants: Coherence C_sys >= 0.80"]
+    end
+
+    subgraph SecurityCore["Deterministic Security & Evaluation Invariants"]
+        LEMMA_ANNA_1["LEMMA_ANNA_1: AST Sandbox Invariant<br/><i>O(|AST|) walk, zero-token, blocks dangerous symbols & dunders</i><br/><b>[STATUS: VERIFIED (100%)]</b>"]
+        LEMMA_ANNA_2["LEMMA_ANNA_2: Discrete QAG Bounded Evaluation<br/><i>Atomic boolean decomposition, metric strictly bounded in [0.0, 1.0]</i><br/><b>[STATUS: VERIFIED (100%)]</b>"]
+    end
+
+    subgraph InterfaceCore["Surface & Protocol Integrity Invariants"]
+        LEMMA_ANNA_3["LEMMA_ANNA_3: A2UI State Containment<br/><i>Deterministic schema compliance, injection-free declarative UI</i><br/><b>[STATUS: VERIFIED (100%)]</b>"]
+        LEMMA_ANNA_4["LEMMA_ANNA_4: MCP Conformance & Zero Regression<br/><i>JSON-RPC 2.0 stdio wire purity, 0 falsifications</i><br/><b>[STATUS: VERIFIED (100%)]</b>"]
+    end
+
+    ROOT --> LEMMA_ANNA_1
+    ROOT --> LEMMA_ANNA_2
+    LEMMA_ANNA_1 --> LEMMA_ANNA_3
+    LEMMA_ANNA_2 --> LEMMA_ANNA_3
+    LEMMA_ANNA_1 --> LEMMA_ANNA_4
+    LEMMA_ANNA_2 --> LEMMA_ANNA_4
+    LEMMA_ANNA_3 --> LEMMA_ANNA_4
+
+    classDef foundation fill:#1e1e2e,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4;
+    classDef security fill:#181825,stroke:#a6e3a1,stroke-width:2px,color:#cdd6f4;
+    classDef interface fill:#181825,stroke:#89b4fa,stroke-width:2px,color:#cdd6f4;
+
+    class Foundation,ROOT foundation;
+    class SecurityCore,LEMMA_ANNA_1,LEMMA_ANNA_2 security;
+    class InterfaceCore,LEMMA_ANNA_3,LEMMA_ANNA_4 interface;
 ```
 
 ---
