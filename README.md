@@ -1,20 +1,6 @@
 # Anna Sentinel MCP App
 
 
----
-
-### 🛡️ Stellar Colosseum Invariant Audit & Formal Verification
-
-[![Stellar Colosseum: Verified](https://img.shields.io/badge/Stellar_Colosseum-Verified_100%25-brightgreen.svg)](STELLAR_INVARIANT_PROOF.md)
-[![Systemic Coherence](https://img.shields.io/badge/Systemic_Coherence-0.9586-blue.svg)](STELLAR_INVARIANT_PROOF.md)
-[![Adversarial Falsification](https://img.shields.io/badge/Falsification_Attacks-0_Regressions-success.svg)](STELLAR_INVARIANT_PROOF.md)
-
-This repository has been formally audited and certified using Google Research's **Stellar Colosseum Multi-Agent Long-Horizon Research Harness** (arXiv:2609.15983):
-- **100% Invariants Verified**: All 4 protocol lemmas proved without contradiction.
-- **Adversarial Resistance**: Subjected to AutoHarness counterexample hunting with zero exploitable paths.
-- **Read the Full Audit**: See [STELLAR_INVARIANT_PROOF.md](STELLAR_INVARIANT_PROOF.md) for full proofs and test traces.
-
----
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests: Pytest](https://img.shields.io/badge/Tests-10/10%20Passing-brightgreen.svg)]()
@@ -30,7 +16,7 @@ This repository has been formally audited and certified using Google Research's 
 
 As AI agents on Anna AI OS execute complex autonomous workflows and tool actions, they face two critical failure modes:
 1. **Security Vulnerabilities**: Malicious or hallucinatory code executing arbitrary shell commands (`os.system`, `subprocess`) or escaping runtime sandboxes (`__class__.__subclasses__`).
-2. **Subjective Hallucination Collapse**: Using LLMs to rate agent output on arbitrary 1–10 scales produces inconsistent, uncalibrated, and drifting evaluations.
+2. **Subjective Hallucination Collapse**: Using LLMs to rate agent output on arbitrary 1 to 10 scales produces inconsistent, uncalibrated, and drifting evaluations.
 
 **Anna Sentinel MCP App** solves both problems natively within Anna AI OS:
 - **Zero-Token AST Verifier**: Scans and sanitizes agent code in **<0.2 ms** using Python Abstract Syntax Trees without spending a single LLM token.
@@ -152,7 +138,7 @@ stateDiagram-v2
 
 | Metric | Without Anna Sentinel (LLM-Based) | With Anna Sentinel (Deterministic AST) |
 |---|---|---|
-| **Audit Latency** | 1,800 ms – 3,500 ms | **< 0.2 ms (9,000x faster)** |
+| **Audit Latency** | 1,800 ms to 3,500 ms | **< 0.2 ms (9,000x faster)** |
 | **Token Cost / Audit** | $0.015 per check (Claude 3.5 / GPT-4o) | **$0.0000 (0 tokens)** |
 | **Monthly Cost (100k agent runs/day)** | **$45,000 / month** | **$0.00 / month ($45,000/mo saved)** |
 | **Sandbox Breakout Defense** | Flaky (prompt injection susceptible) | **Deterministic AST Blockade (100%)** |

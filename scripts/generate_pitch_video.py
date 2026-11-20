@@ -158,12 +158,12 @@ SCENES = [
             <div class="header">
                 <span class="badge">Code Walkthrough • MCP Server &amp; A2UI 1.0</span>
                 <h1>Core Runtime: JSON-RPC Handler &amp; A2UI Renderer</h1>
-                <p class="subtitle">Verbatim source from <code>sentinel_server.py</code> (86–152) and <code>a2ui_renderer.py</code> (13–62).</p>
+                <p class="subtitle">Verbatim source from <code>sentinel_server.py</code> (86 to 152) and <code>a2ui_renderer.py</code> (13 to 62).</p>
             </div>
             <div class="code-grid-2">
                 <div class="code-box">
                     <div class="linux-bar">
-                        <span class="linux-tab">sentinel_server.py (Lines 86–152)</span>
+                        <span class="linux-tab">sentinel_server.py (Lines 86 to 152)</span>
                         <div class="linux-controls"><span>_</span><span>□</span><span>✕</span></div>
                     </div>
                     <pre style="font-size:13.4px;line-height:1.25;">{MCP_SERVER_CODE}</pre>
@@ -174,7 +174,7 @@ SCENES = [
                 </div>
                 <div class="code-box">
                     <div class="linux-bar">
-                        <span class="linux-tab">a2ui_renderer.py (Lines 13–62)</span>
+                        <span class="linux-tab">a2ui_renderer.py (Lines 13 to 62)</span>
                         <div class="linux-controls"><span>_</span><span>□</span><span>✕</span></div>
                     </div>
                     <pre style="font-size:14.2px;line-height:1.30;">{A2UI_RENDERER_CODE}</pre>
@@ -204,7 +204,7 @@ SCENES = [
             <div class="code-grid-2">
                 <div class="code-box">
                     <div class="linux-bar">
-                        <span class="linux-tab">verifier_ast.py (Lines 17–70)</span>
+                        <span class="linux-tab">verifier_ast.py (Lines 17 to 70)</span>
                         <div class="linux-controls"><span>_</span><span>□</span><span>✕</span></div>
                     </div>
                     <pre style="font-size:14.4px;line-height:1.32;">{AST_VERIFIER_TOP}</pre>
@@ -215,7 +215,7 @@ SCENES = [
                 </div>
                 <div class="code-box">
                     <div class="linux-bar">
-                        <span class="linux-tab">verifier_ast.py (Lines 71–130)</span>
+                        <span class="linux-tab">verifier_ast.py (Lines 71 to 130)</span>
                         <div class="linux-controls"><span>_</span><span>□</span><span>✕</span></div>
                     </div>
                     <pre style="font-size:13.8px;line-height:1.27;">{AST_VERIFIER_BOT}</pre>
@@ -245,7 +245,7 @@ SCENES = [
             <div class="code-grid-2">
                 <div class="terminal-mini">
                     <div class="linux-bar">
-                        <span class="linux-tab">mcp-stdio — Clean Pure Python Tool Call</span>
+                        <span class="linux-tab">mcp-stdio: Clean Pure Python Tool Call</span>
                         <div class="linux-controls"><span>_</span><span>□</span><span>✕</span></div>
                     </div>
                     <div class="term-lines" style="font-size:17px;">
@@ -262,7 +262,7 @@ SCENES = [
                 </div>
                 <div class="terminal-mini danger-border">
                     <div class="linux-bar danger-header">
-                        <span class="linux-tab-danger">mcp-stdio — __subclasses__ &amp; os.system Injection</span>
+                        <span class="linux-tab-danger">mcp-stdio: __subclasses__ &amp; os.system Injection</span>
                         <div class="linux-controls"><span>_</span><span>□</span><span>✕</span></div>
                     </div>
                     <div class="term-lines" style="font-size:17px;">
