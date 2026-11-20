@@ -1,157 +1,200 @@
 # Anna Sentinel MCP App
 
+A small Model Context Protocol (MCP) server I built for the DoraHacks Anna AI App Builder Program. It speaks JSON-RPC 2.0 over stdio and gives an agent three tools: a static AST check for Python code, a claim score, and a JSON review card with Approve and Quarantine buttons for a human to click.
 
+The AST check never runs the code it inspects and makes no model calls. On my machine it takes about 100 to 150 µs on the first call in a fresh process and has a median of 26 µs over 1,000 repeated calls on a five-line function.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests: Pytest](https://img.shields.io/badge/Tests-10/10%20Passing-brightgreen.svg)]()
-[![Tokens: Zero](https://img.shields.io/badge/Token%20Cost-$0.00%20(Zero%20Tokens)-blue.svg)]()
-[![UI: Google A2UI 1.0](https://img.shields.io/badge/UI-Google%20A2UI%201.0-purple.svg)]()
-
-> **DoraHacks Anna AI App Builder Program Submission**  
-> **Autonomous Agent Security, QAG Claim Verification & Generative UI Sentinel for Anna AI OS**
+The package has no runtime dependencies outside the Python standard library.
 
 ---
 
-## Executive Summary
+## Quickstart
 
-As AI agents on Anna AI OS execute complex autonomous workflows and tool actions, they face two critical failure modes:
-1. **Security Vulnerabilities**: Malicious or hallucinatory code executing arbitrary shell commands (`os.system`, `subprocess`) or escaping runtime sandboxes (`__class__.__subclasses__`).
-2. **Subjective Hallucination Collapse**: Using LLMs to rate agent output on arbitrary 1 to 10 scales produces inconsistent, uncalibrated, and drifting evaluations.
+```bash
+git clone https://github.com/manderson240/anna-sentinel-mcp-app.git
+cd anna-sentinel-mcp-app
 
-**Anna Sentinel MCP App** solves both problems natively within Anna AI OS:
-- **Zero-Token AST Verifier**: Scans and sanitizes agent code in **<0.2 ms** using Python Abstract Syntax Trees without spending a single LLM token.
-- **Discrete QAG Claim Evaluation**: Decomposes outputs into atomic factual claims evaluated with reproducible Boolean arithmetic.
-- **Google A2UI 1.0 Declarative Surfaces**: Generates safe, declarative UI component trees ("Safe like data, expressive like code") with status badges, metrics grids, and interactive resolution buttons (`Approve`, `Quarantine`, `Rerun`).
+# Run the tests
+uv run pytest -q
+
+# Start the MCP server on stdio (reads one JSON-RPC request per line)
+uv run python -m anna_sentinel.sentinel_server
+```
+
+### Demo output
+
+I piped these requests into the server: `initialize`, `tools/list`, `audit_code` on a clean Fibonacci function, `audit_code` on a payload with `from os import system` and a `__subclasses__` chain, and `verify_claims` with two supported claims and one unsupported claim.
+
+```bash
+printf '%s\n' \
+'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' \
+'{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
+'{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"audit_code","arguments":{"source_code":"def fib(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a + b\n    return a\n"}}}' \
+'{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"audit_code","arguments":{"source_code":"from os import system\nx = ().__class__.__bases__[0].__subclasses__()\n"}}}' \
+'{"jsonrpc":"2.0","id":5,"method":"tools/call","params":{"name":"verify_claims","arguments":{"claims":[{"text":"a","supported":true},{"text":"b","supported":true},{"text":"c","supported":false}]}}}' \
+| uv run python -m anna_sentinel.sentinel_server
+```
+
+Output (trimmed: I removed the log timestamp, the `tools/list` response and the attestation blocks, and unpacked the JSON text inside each `content` item so it is readable):
+
+```text
+INFO [sentinel] Starting anna-sentinel-mcp-app JSON-RPC server on stdio...
+{"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2024-11-05", "capabilities": {"tools": {}}, "serverInfo": {"name": "anna-sentinel-mcp-app", "version": "1.0.0"}}}
+
+id 3 (clean code):
+  "is_safe": true,
+  "violations": [],
+  "metrics": {"elapsed_us": 148.55, "nodes_visited": 43}
+
+id 4 (malicious code):
+  "is_safe": false,
+  "violations": [
+    "Line 1: Forbidden import 'from os import system'",
+    "Line 2: Forbidden sandbox breakout attribute '__subclasses__'",
+    "Line 2: Forbidden sandbox breakout attribute '__bases__'",
+    "Line 2: Forbidden sandbox breakout attribute '__class__'"
+  ],
+  "metrics": {"elapsed_us": 72.78, "nodes_visited": 18}
+
+id 5 (claims):
+  "score": 0.6667, "passed": false, "total_claims": 3, "supported_claims": 2
+```
+
+`elapsed_us` is measured by the server with `time.perf_counter` and changes from run to run.
 
 ---
 
-## Architecture Flow
+## How it works
+
+There are four modules in [`src/anna_sentinel/`](src/anna_sentinel/):
+
+1. [`sentinel_server.py`](src/anna_sentinel/sentinel_server.py): `main()` reads stdin line by line and passes each line to `process_request()`, which handles `initialize`, `tools/list`, `tools/call` and `notifications/initialized`. Bad JSON returns error `-32700` and unknown methods or tools return `-32601`. `handle_tools_call()` dispatches the three tools:
+   - `audit_code(source_code)`: runs `audit_source()` and returns the audit plus an HMAC receipt from `generate_attestation_receipt()`.
+   - `verify_claims(claims)`: runs `evaluate_claims_mock()`.
+   - `create_a2ui_card(source_code, claims?)`: runs the audit (and the claim score if claims are given) and returns the card from `render_sentinel_surface()`.
+2. [`verifier_ast.py`](src/anna_sentinel/verifier_ast.py): `ASTVerifier` is an `ast.NodeVisitor`. It parses the source with `ast.parse` and flags:
+   - calls to `eval`, `exec`, `__import__`, `getattr`, `setattr`, `delattr` by name (`DANGEROUS_CALLS`)
+   - any import of `subprocess` or `importlib` (`DANGEROUS_MODULES`)
+   - `from os import system` / `popen` and calls written as `os.system(...)` / `os.popen(...)`
+   - any attribute access to `__class__`, `__subclasses__`, `__bases__`, `__globals__`, `__builtins__`, `__dict__`, `__code__` (`SANDBOX_BREAKOUT_ATTRS`)
+   - syntax errors, which are reported as a violation
+
+   It returns an `ASTAuditResult` with `is_safe`, the list of violations with line numbers, the elapsed time and the number of nodes visited.
+3. [`mock_hub.py`](src/anna_sentinel/mock_hub.py): `evaluate_claims_mock()` takes claims that already carry a `supported` boolean and returns `supported / total`, rounded to 4 places, with `passed = score >= 0.85`. `generate_attestation_receipt()` signs `payload:timestamp` with HMAC-SHA256 and also returns the SHA-256 of the payload.
+4. [`a2ui_renderer.py`](src/anna_sentinel/a2ui_renderer.py): `render_sentinel_surface()` builds a JSON tree with `version: "1.0"`: a `card` header, a `badge` (green "PASSED: AST Secure" or red "ALERT: N Violations"), a `grid` with latency and node count, a `list` of violations if there are any, a `scorecard` if claims were scored, and an `action_group` with three buttons. "Approve Execution" is disabled when the code is unsafe and "Quarantine Code" is disabled when it is safe.
+
+### Architecture
 
 ```mermaid
 flowchart TD
-    subgraph Host["Anna AI OS Host Environment"]
-        Agent["Autonomous Agent / LLM Runtime"]
-        UIHost["A2UI 1.0 Declarative Surface Viewer"]
+    subgraph Host["MCP host (agent runtime)"]
+        Agent["Agent"]
+        Viewer["Card viewer"]
     end
 
-    subgraph MCP["Anna Sentinel MCP Server (JSON-RPC 2.0 stdio)"]
-        Router["JSON-RPC Tool Router"]
-        
-        subgraph AST["Sub-millisecond AST Security Engine"]
-            Parser["Python AST Node Visitor"]
-            Denylist["Dangerous Symbol Trap (os.system, subprocess, eval)"]
-            Dunder["Dunder Breakout Guard (__subclasses__, __globals__)"]
-        end
-
-        subgraph QAG["Discrete QAG Claim Engine"]
-            Decomposer["Atomic Proposition Extractor"]
-            Entailment["Factual Entailment Verifier"]
-            Scorer["Bounded Metric Computer [0.0, 1.0]"]
-        end
-
-        subgraph A2UI["A2UI 1.0 Declarative Engine"]
-            Builder["JSON Surface Tree Builder"]
-            Card["MetricGrid + ProgressBar + ActionButtons"]
-        end
+    subgraph Server["sentinel_server.py (JSON-RPC 2.0 over stdio)"]
+        Main["main()"]
+        Process["process_request()"]
+        Call["handle_tools_call()"]
     end
 
-    Agent -->|"call_tool('audit_agent_code')"| Router
-    Router --> Parser
-    Parser --> Denylist & Dunder
-    Denylist & Dunder -->|"is_safe verdict (<0.2ms, $0.00)"| Decomposer
-    Decomposer --> Entailment --> Scorer
-    Scorer --> Builder --> Card
-    Card -->|"JSON-RPC Response"| Router
-    Router -->|"Interactive Surface Tree"| UIHost
+    subgraph Checks["Checks"]
+        Audit["audit_source() in verifier_ast.py"]
+        Claims["evaluate_claims_mock() in mock_hub.py"]
+        Receipt["generate_attestation_receipt() in mock_hub.py"]
+        Render["render_sentinel_surface() in a2ui_renderer.py"]
+    end
 
-    classDef host fill:#1e1e2e,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4;
-    classDef mcp fill:#181825,stroke:#89b4fa,stroke-width:2px,color:#cdd6f4;
-    classDef ast fill:#313244,stroke:#a6e3a1,stroke-width:2px,color:#cdd6f4;
-    classDef qag fill:#313244,stroke:#f9e2af,stroke-width:2px,color:#cdd6f4;
-    classDef a2ui fill:#313244,stroke:#f38ba8,stroke-width:2px,color:#cdd6f4;
-
-    class Host,Agent,UIHost host;
-    class MCP,Router mcp;
-    class AST,Parser,Denylist,Dunder ast;
-    class QAG,Decomposer,Entailment,Scorer qag;
-    class A2UI,Builder,Card a2ui;
+    Agent -->|"one JSON line on stdin"| Main --> Process --> Call
+    Call -->|"audit_code"| Audit
+    Call -->|"audit_code"| Receipt
+    Call -->|"verify_claims"| Claims
+    Call -->|"create_a2ui_card"| Audit
+    Call -->|"create_a2ui_card with claims"| Claims
+    Audit --> Render
+    Claims --> Render
+    Call -->|"one JSON line on stdout"| Agent
+    Render -->|"card JSON"| Viewer
 ```
 
-### Execution Sequence
+### create_a2ui_card sequence
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Agent as Anna AI Agent
-    participant MCP as Sentinel MCP Server
-    participant AST as AST Verifier
-    participant QAG as Discrete QAG Scorer
-    participant A2UI as A2UI 1.0 Engine
-    actor Human as Human Supervisor
+    actor Agent
+    participant Server as handle_tools_call
+    participant AST as audit_source
+    participant QAG as evaluate_claims_mock
+    participant UI as render_sentinel_surface
+    actor Human
 
-    Agent->>MCP: call_tool("audit_agent_code", {code: "..."})
-    activate MCP
-    MCP->>AST: parse & walk syntax tree
-    activate AST
-    AST-->>MCP: verdict: SAFE (<0.2ms, zero tokens)
-    deactivate AST
-
-    MCP->>QAG: decompose claims & verify entailment
-    activate QAG
-    QAG-->>MCP: fidelity_score: 0.95 (bounded in [0.0, 1.0])
-    deactivate QAG
-
-    MCP->>A2UI: build declarative JSON surface tree
-    activate A2UI
-    A2UI-->>MCP: surface_card (Card, MetricGrid, ActionButtons)
-    deactivate A2UI
-
-    MCP-->>Agent: JSON-RPC Result (safe=True, a2ui_payload)
-    deactivate MCP
-
-    Agent->>Human: Render native interactive surface
-    Human->>Agent: Click "Approve Execution" or "Quarantine"
+    Agent->>Server: tools/call create_a2ui_card {source_code, claims}
+    Server->>AST: audit_source(source_code)
+    AST-->>Server: is_safe, violations, metrics
+    opt claims given
+        Server->>QAG: evaluate_claims_mock(claims)
+        QAG-->>Server: score, passed, counts
+    end
+    Server->>UI: render_sentinel_surface(audit, qag)
+    UI-->>Server: card, badge, grid, list, scorecard, action_group
+    Server-->>Agent: JSON-RPC result
+    Agent->>Human: show the card
+    Human->>Agent: click Approve Execution or Quarantine Code
 ```
 
-### Security & Quarantine State Machine
+### Button states
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Uninspected: Code Generated by Agent
-    Uninspected --> AST_Inspecting: Dispatch to Sentinel MCP
-    AST_Inspecting --> Quarantined: Dangerous Symbol / Dunder Breakout Detected
-    AST_Inspecting --> AST_Verified: Zero Forbidden AST Nodes
-    AST_Verified --> QAG_Decomposing: Extract Atomic Claims
-    QAG_Decomposing --> QAG_Evaluated: Compute Entailment Fidelity
-    QAG_Evaluated --> Quarantined: Fidelity < Threshold (Hallucination)
-    QAG_Evaluated --> A2UI_Assembling: Build Declarative Wire Surface
-    A2UI_Assembling --> Surface_Dispatched: JSON-RPC Surface Tree Emitted
-    Surface_Dispatched --> Certified_Approved: User / Agent Approves Execution
-    Surface_Dispatched --> Quarantined: User / Agent Quarantines Execution
-    Quarantined --> [*]
-    Certified_Approved --> [*]
+    [*] --> Parsed: ast.parse
+    [*] --> Unsafe: SyntaxError
+    Parsed --> Unsafe: violation found
+    Parsed --> Safe: no violations
+    Safe --> ApproveEnabled: Approve enabled, Quarantine disabled
+    Unsafe --> QuarantineEnabled: Approve disabled, Quarantine enabled
+    ApproveEnabled --> [*]
+    QuarantineEnabled --> [*]
 ```
 
 ---
 
-## Economic ROI Calculator
+## Configuration
 
-| Metric | Without Anna Sentinel (LLM-Based) | With Anna Sentinel (Deterministic AST) |
-|---|---|---|
-| **Audit Latency** | 1,800 ms to 3,500 ms | **< 0.2 ms (9,000x faster)** |
-| **Token Cost / Audit** | $0.015 per check (Claude 3.5 / GPT-4o) | **$0.0000 (0 tokens)** |
-| **Monthly Cost (100k agent runs/day)** | **$45,000 / month** | **$0.00 / month ($45,000/mo saved)** |
-| **Sandbox Breakout Defense** | Flaky (prompt injection susceptible) | **Deterministic AST Blockade (100%)** |
-| **Evaluation Drift** | High (1-10 numerical drift) | **0.0% (Boolean arithmetic)** |
+The code does not read any environment variables. The HMAC key defaults to `anna-sentinel-mock-key` in `generate_attestation_receipt()`, and the server does not pass a different one.
 
 ---
 
-## Quickstart & Verification
+## Tests
 
 ```bash
-# Run the test suite
-uv run pytest -v
-
-# Run the MCP server over stdio
-python3 -m anna_sentinel.sentinel_server
+uv run pytest -q
 ```
+
+10 tests, all passing in 0.01 s on my machine, with no network calls:
+
+- [`tests/test_verifier_ast.py`](tests/test_verifier_ast.py) (6): clean code passes, `os.system`, `subprocess`, `eval` and a `__class__` / `__subclasses__` chain are flagged, and a syntax error is reported.
+- [`tests/test_sentinel_server.py`](tests/test_sentinel_server.py) (4): `initialize`, `tools/list` returns the three tools, `audit_code` flags `subprocess` and returns a signature, and the renderer returns a version 1.0 tree with a badge.
+
+---
+
+## Limits
+
+- This is a short denylist, not a sandbox. I checked these cases by hand and all of them pass as safe today: `import os` on its own, `import os as o; o.system("ls")`, `os.execv(...)`, `open("/etc/passwd")`, `import socket`, `import builtins; builtins.eval("1")`, and `while True: pass`. Code that passes the check still needs to run in a real sandbox.
+- The server never runs the code, so there is no timeout or resource limit to test.
+- `verify_claims` does not extract or check claims. The caller has to send each claim with `supported` already set, and the tool only counts them.
+- The receipt uses a hard-coded demo key and always returns `"verified": true`. There is no function that checks a receipt. Treat it as a placeholder.
+- The card is my own JSON layout with `version: "1.0"` and component types `card`, `badge`, `grid`, `list`, `scorecard`, `action_group`. I have not validated it against the published A2UI schema.
+- The button `call` values (`anna.sentinel.approve`, `anna.sentinel.quarantine`, `anna.sentinel.rerun`) are strings only. The server has no handler for them; the host has to act on the click.
+- I tested the server by piping JSON-RPC lines into it and through the unit tests. Only Python source is supported.
+
+---
+
+## Hackathon deliverables
+
+- Submission text: [`BUIDL_SUBMISSION.md`](BUIDL_SUBMISSION.md)
+- Demo video: [`docs/anna_sentinel_demo.mp4`](docs/anna_sentinel_demo.mp4), generated with `python3 scripts/generate_pitch_video.py`
+
+## License
+
+MIT

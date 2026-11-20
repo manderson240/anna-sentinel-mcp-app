@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Automated 2560x1440 (2K QHD) 6-Scene Code Walkthrough & Pitch Video Generator
-for Anna Sentinel MCP App (Anna AI App Builder + Terminal 3 + Masa Subnet 42).
+for Anna Sentinel MCP App (Anna AI App Builder Program).
 """
 
 from __future__ import annotations
@@ -38,47 +38,42 @@ SCENES = [
     {
         "id": "scene0_title_hero",
         "narration": (
-            "Anna Sentinel MCP App. Sub-millisecond AST security, discrete QAG claim verification, "
-            "and declarative Google A2UI version one point zero human-in-the-loop surfaces for Anna AI OS. "
+            "Anna Sentinel MCP App. A sub-millisecond static AST check, a claim counter, "
+            "and a JSON review card for a person to approve or quarantine, built for Anna AI OS. "
             "Built as a Model Context Protocol stdio JSON-RPC two point zero server. "
-            "Running static AST inspection in point zero zero seven six milliseconds p50 with zero cloud LLM token cost, "
-            "Cohen's d equal to two point one two, Wald SPRT log-likelihood ratio plus one hundred three point one six, "
-            "and ten out of ten passing pytest unit tests."
+            "On my machine the static AST check has a median of twenty six microseconds over one thousand calls, "
+            "with no model calls, and all ten pytest unit tests pass."
         ),
         "html_body": """
             <div class="header" style="text-align:center;margin-top:12px;margin-bottom:24px;">
-                <span class="badge" style="font-size:20px;padding:8px 26px;">Anna AI App Builder + Terminal 3 + Masa Subnet 42 • $1,800+ Multi-Track</span>
+                <span class="badge" style="font-size:20px;padding:8px 26px;">Anna AI App Builder Program</span>
                 <h1 style="font-size:64px;margin-top:14px;margin-bottom:10px;letter-spacing:-2px;">Anna Sentinel MCP App</h1>
                 <p class="subtitle" style="font-size:26px;margin:0 auto;max-width:1950px;color:#38bdf8;font-weight:500;">
-                    Zero-Token MCP Stdio AST Guardrail, Discrete QAG Evaluator &amp; Google A2UI 1.0 HITL Surfaces
+                    MCP Stdio AST Denylist, Claim Counter &amp; JSON Review Card
                 </p>
             </div>
             <div class="grid-4" style="margin-top:20px;margin-bottom:20px;">
                 <div class="card" style="text-align:center;border-color:rgba(56,189,248,0.4);background:rgba(56,189,248,0.08);">
-                    <div class="card-icon">⚡</div>
-                    <h3 style="font-size:30px;color:#38bdf8;">0.0076 ms p50</h3>
-                    <p style="font-size:18px;color:#cbd5e1;">Deterministic AST audit with zero LLM token burn</p>
+                                        <h3 style="font-size:30px;color:#38bdf8;">26 µs p50</h3>
+                    <p style="font-size:18px;color:#cbd5e1;">Median AST check on my machine, no model calls</p>
                 </div>
                 <div class="card" style="text-align:center;border-color:rgba(34,197,94,0.4);background:rgba(34,197,94,0.08);">
-                    <div class="card-icon">🛡️</div>
-                    <h3 style="font-size:30px;color:#22c55e;">MCP JSON-RPC</h3>
+                                        <h3 style="font-size:30px;color:#22c55e;">MCP JSON-RPC</h3>
                     <p style="font-size:18px;color:#cbd5e1;">Standard stdio protocol exposing audit_code, verify_claims &amp; A2UI</p>
                 </div>
                 <div class="card" style="text-align:center;border-color:rgba(192,132,252,0.4);background:rgba(192,132,252,0.08);">
-                    <div class="card-icon">🎯</div>
-                    <h3 style="font-size:30px;color:#c084fc;">Discrete QAG</h3>
-                    <p style="font-size:18px;color:#cbd5e1;">Atomic Boolean claim checking prevents calibration collapse</p>
+                                        <h3 style="font-size:30px;color:#c084fc;">Claim Count</h3>
+                    <p style="font-size:18px;color:#cbd5e1;">Counts claims the caller marked supported</p>
                 </div>
                 <div class="card" style="text-align:center;border-color:rgba(245,158,11,0.4);background:rgba(245,158,11,0.08);">
-                    <div class="card-icon">📊</div>
-                    <h3 style="font-size:30px;color:#f59e0b;">d = 2.12 | +103.2</h3>
-                    <p style="font-size:18px;color:#cbd5e1;">Google A2UI 1.0 surfaces + N=100 SPRT accept_h1 proof</p>
+                                        <h3 style="font-size:30px;color:#f59e0b;">10 tests</h3>
+                    <p style="font-size:18px;color:#cbd5e1;">pytest suite for the server, renderer and AST rules</p>
                 </div>
             </div>
             <div class="flow-container" style="margin-top:16px;">
                 <div class="chip chip-green" style="font-size:17px;padding:10px 20px;">MCP 2024-11-05 Spec</div>
-                <div class="chip chip-blue" style="font-size:17px;padding:10px 20px;">Google A2UI 1.0 Component Tree</div>
-                <div class="chip chip-green" style="font-size:17px;padding:10px 20px;">10/10 Unit Tests PASS (0.01s)</div>
+                <div class="chip chip-blue" style="font-size:17px;padding:10px 20px;">A2UI-style JSON card</div>
+                <div class="chip chip-green" style="font-size:17px;padding:10px 20px;">10 unit tests pass (0.01s)</div>
                 <div class="chip chip-blue" style="font-size:17px;padding:10px 20px;">1-Command: uv run pytest</div>
             </div>
         """,
@@ -87,19 +82,19 @@ SCENES = [
         "id": "scene1_problem_workflow",
         "narration": (
             "How Anna Sentinel Secures Model Context Protocol Agent Workflows. "
-            "Allowing desktop AI assistants to execute generated scripts without deterministic pre-screening creates severe OS injection "
-            "and object-tree breakout vulnerabilities. "
+            "If an assistant runs generated scripts with no check first, a script can reach the shell "
+            "or walk the object tree to escape a restricted namespace. "
             "Step one: Anna AI OS sends tool call payloads over standard MCP stdio JSON-RPC. "
-            "Step two: ASTVerifier inspects every Python AST node before execution, blocking subprocess calls, dynamic imports, "
-            "and __subclasses__ introspection in microseconds. "
-            "Step three: Discrete QAG scores factual claims and renders a declarative A2UI one point zero approval card "
-            "so human supervisors approve or quarantine with zero ambiguity."
+            "Step two: ASTVerifier walks the Python AST without running the code and flags subprocess imports, eval, getattr, "
+            "and dunder attributes such as __subclasses__. "
+            "Step three: verify_claims counts the claims the caller marked supported, and create_a2ui_card returns a JSON card "
+            "where Approve is disabled for unsafe code and Quarantine is disabled for safe code."
         ),
         "html_body": """
             <div class="header">
                 <span class="badge">Architecture • Anna AI OS MCP App</span>
-                <h1>Zero-Trust MCP Tool Execution Pipeline</h1>
-                <p class="subtitle">Deterministic static AST defense paired with structured A2UI 1.0 supervisor approval.</p>
+                <h1>MCP Tool Check Before the Host Runs Code</h1>
+                <p class="subtitle">A static AST denylist plus a JSON review card for a person to approve or quarantine.</p>
             </div>
             <div class="flow-container" style="margin-top:24px;">
                 <div class="flow-step">
@@ -111,35 +106,35 @@ SCENES = [
                 <div class="flow-arrow">➔</div>
                 <div class="flow-step highlight">
                     <div class="flow-num">02</div>
-                    <h4>Static AST + Discrete QAG</h4>
-                    <p>Blocks os.system, eval(), importlib, and __globals__ breakouts in &lt; 0.01ms.</p>
-                    <div class="chip chip-blue">0 LLM Tokens Burned</div>
+                    <h4>Static AST + Claim Count</h4>
+                    <p>Flags os.system, eval(), importlib, and __globals__ access without running the code.</p>
+                    <div class="chip chip-blue">No model calls</div>
                 </div>
                 <div class="flow-arrow">➔</div>
                 <div class="flow-step">
                     <div class="flow-num">03</div>
-                    <h4>Google A2UI 1.0 Card</h4>
-                    <p>Emits safe declarative Card, MetricGrid, ViolationsList &amp; Approve/Quarantine buttons.</p>
-                    <div class="chip chip-green">HITL Gated Receipt</div>
+                    <h4>A2UI-style JSON Card</h4>
+                    <p>Returns card, badge, grid, violations list &amp; Approve/Quarantine buttons.</p>
+                    <div class="chip chip-green">Approve disabled when unsafe</div>
                 </div>
             </div>
             <div class="grid-2" style="margin-top:24px;">
                 <div class="card danger">
-                    <h3>❌ Unprotected MCP Tool Runtime</h3>
+                    <h3>What it does not catch</h3>
                     <ul>
-                        <li><strong>Blind Exec:</strong> Agent-generated scripts reach subprocess or os.system</li>
-                        <li><strong>Bypass Attacks:</strong> String regex filters missed getattr / __subclasses__</li>
-                        <li><strong>LLM Judges:</strong> Continuous Likert ratings suffer calibration drift</li>
-                        <li><strong>UI Risk:</strong> Raw HTML execution exposes XSS injection surfaces</li>
+                        <li><strong>Aliases:</strong> import os as o; o.system(...) passes</li>
+                        <li><strong>Other calls:</strong> open(), socket, os.execv pass</li>
+                        <li><strong>Loops:</strong> no timeout, the code is never run</li>
+                        <li><strong>Claims:</strong> the caller sets each supported flag</li>
                     </ul>
                 </div>
                 <div class="card success">
-                    <h3>✅ Anna Sentinel MCP Solution</h3>
+                    <h3>What it does</h3>
                     <ul>
                         <li><strong>AST Inspection:</strong> Structural NodeVisitor blocks dynamic imports &amp; dunders</li>
-                        <li><strong>Speed:</strong> 0.0076 ms p50 pre-execution verification</li>
-                        <li><strong>Exact QAG:</strong> Discrete supported/unsupported claim arithmetic</li>
-                        <li><strong>Safe UI:</strong> Typed Google A2UI 1.0 JSON surface with disabled gates</li>
+                        <li><strong>Speed:</strong> 26 µs median on my machine</li>
+                        <li><strong>Claims:</strong> supported / total, passing at 0.85</li>
+                        <li><strong>Card:</strong> JSON tree with buttons disabled by verdict</li>
                     </ul>
                 </div>
             </div>
@@ -152,7 +147,7 @@ SCENES = [
             "On the left is src/anna_sentinel/sentinel_server.py lines eighty-six through one hundred fifty-two, "
             "dispatching audit_code, verify_claims, and create_a2ui_card over standard JSON-RPC two point zero. "
             "On the right is src/anna_sentinel/a2ui_renderer.py compiling audit latency, node counts, and violation lists "
-            "into declarative version one point zero Google A2UI component trees."
+            "into a JSON card tagged version one point zero."
         ),
         "html_body": f"""
             <div class="header">
@@ -168,8 +163,8 @@ SCENES = [
                     </div>
                     <pre style="font-size:13.4px;line-height:1.25;">{MCP_SERVER_CODE}</pre>
                     <div class="eval-flow">
-                        <span class="flow-pill pass">✓ JSON-RPC 2.0 Stdio</span>
-                        <span class="flow-pill pass">✓ Attestation Signing</span>
+                        <span class="flow-pill pass">[OK] JSON-RPC 2.0 Stdio</span>
+                        <span class="flow-pill pass">[OK] HMAC Receipt (demo key)</span>
                     </div>
                 </div>
                 <div class="code-box">
@@ -179,8 +174,8 @@ SCENES = [
                     </div>
                     <pre style="font-size:14.2px;line-height:1.30;">{A2UI_RENDERER_CODE}</pre>
                     <div class="eval-flow">
-                        <span class="flow-pill pass">✓ Google A2UI 1.0 Spec</span>
-                        <span class="flow-pill pass">✓ Zero-Token Telemetry</span>
+                        <span class="flow-pill pass">[OK] JSON Card</span>
+                        <span class="flow-pill pass">[OK] No Model Calls</span>
                     </div>
                 </div>
             </div>
@@ -192,14 +187,14 @@ SCENES = [
             "Next is the static security engine inside src/anna_sentinel/verifier_ast.py lines seventeen through one hundred thirty. "
             "On the left, frozen sets specify dangerous calls, dangerous modules, and sandbox breakout attributes "
             "including __class__, __subclasses__, __globals__, and __builtins__. "
-            "On the right, ASTVerifier parses Python source in microseconds, tracks node count, and flags line numbers "
+            "On the right, ASTVerifier parses Python source, counts nodes, and records line numbers "
             "for forbidden imports and subprocess executions without ever running untrusted code."
         ),
         "html_body": f"""
             <div class="header">
-                <span class="badge">Code Walkthrough • Zero-Token AST Security Gate</span>
+                <span class="badge">Code Walkthrough • AST Denylist</span>
                 <h1>Verbatim Guardrail: ASTVerifier NodeVisitor</h1>
-                <p class="subtitle">Complete sandbox escape &amp; OS call rules from <code>src/anna_sentinel/verifier_ast.py</code>.</p>
+                <p class="subtitle">The denylist rules from <code>src/anna_sentinel/verifier_ast.py</code>.</p>
             </div>
             <div class="code-grid-2">
                 <div class="code-box">
@@ -209,8 +204,8 @@ SCENES = [
                     </div>
                     <pre style="font-size:14.4px;line-height:1.32;">{AST_VERIFIER_TOP}</pre>
                     <div class="eval-flow">
-                        <span class="flow-pill pass">✓ Dangerous Calls &amp; Modules</span>
-                        <span class="flow-pill pass">✓ Breakout Dunder Constants</span>
+                        <span class="flow-pill pass">[OK] Dangerous Calls &amp; Modules</span>
+                        <span class="flow-pill pass">[OK] Breakout Dunder Constants</span>
                     </div>
                 </div>
                 <div class="code-box">
@@ -220,8 +215,8 @@ SCENES = [
                     </div>
                     <pre style="font-size:13.8px;line-height:1.27;">{AST_VERIFIER_BOT}</pre>
                     <div class="eval-flow">
-                        <span class="flow-pill pass">✓ Sub-Millisecond Timing</span>
-                        <span class="flow-pill pass">✓ os.system &amp; subprocess Traps</span>
+                        <span class="flow-pill pass">[OK] perf_counter Timing</span>
+                        <span class="flow-pill pass">[OK] os.system &amp; subprocess Rules</span>
                     </div>
                 </div>
             </div>
@@ -231,16 +226,16 @@ SCENES = [
         "id": "scene4_honest_vs_adversarial_exec",
         "narration": (
             "Side-by-side live MCP tool execution. "
-            "On the left, a clean numerical routine passes audit_source cleanly with zero violations in six point five microseconds "
-            "and renders an A2UI one point zero approval surface with Approve Execution enabled. "
-            "On the right, an adversarial payload attempting class subclasses introspection and os system execution "
-            "is caught before runtime with two explicit line violations, automatically disabling execution and enabling Quarantine."
+            "On the left, a clean Fibonacci function passes audit_source with zero violations "
+            "and the card has Approve Execution enabled. "
+            "On the right, a payload with from os import system and a class subclasses chain "
+            "is flagged with four violations on two lines, so Approve is disabled and Quarantine is enabled."
         ),
         "html_body": """
             <div class="header">
                 <span class="badge">Live Walkthrough • Clean MCP Tool vs. Sandbox Breakout</span>
                 <h1>Runtime Execution: Safe Approval vs. Breakout Quarantine</h1>
-                <p class="subtitle">Deterministic MCP responses gating human supervisor controls in real time.</p>
+                <p class="subtitle">Output from create_a2ui_card on my machine, one run each.</p>
             </div>
             <div class="code-grid-2">
                 <div class="terminal-mini">
@@ -250,14 +245,13 @@ SCENES = [
                     </div>
                     <div class="term-lines" style="font-size:17px;">
                         <p class="t-line"><span class="t-prompt">$</span> {"method":"tools/call","params":{"name":"create_a2ui_card"}}</p>
-                        <p class="t-line t-cyan">[1] ASTVerifier scanning safe fibonacci implementation...</p>
+                        <p class="t-line t-cyan">[1] ASTVerifier scanning a fibonacci function...</p>
                         <p class="t-line t-indent">is_safe      = <span class="t-green">True</span> • violations = []</p>
-                        <p class="t-line t-indent">elapsed_us   = <span class="t-green">6.5 µs</span> (0.0065 ms)</p>
-                        <p class="t-line t-cyan">[2] Compiling Google A2UI 1.0 Component Tree...</p>
+                        <p class="t-line t-indent">elapsed_us   = <span class="t-green">96.56 µs</span> (first call)</p>
+                        <p class="t-line t-cyan">[2] Building the JSON card...</p>
                         <p class="t-line t-indent">status_badge = <span class="t-green">'PASSED: AST Secure' (#10B981)</span></p>
                         <p class="t-line t-indent">action_bar   = Approve Execution <span class="t-green">[ENABLED]</span></p>
-                        <p class="t-line t-indent">attestation  = <span class="t-yellow">sha256:9c210e...a842</span></p>
-                        <div class="t-banner-pass">A2UI APPROVAL SURFACE READY • 0 TOKENS BURNED</div>
+                        <div class="t-banner-pass">APPROVE ENABLED • NO MODEL CALLS</div>
                     </div>
                 </div>
                 <div class="terminal-mini danger-border">
@@ -266,15 +260,17 @@ SCENES = [
                         <div class="linux-controls"><span>_</span><span>□</span><span>✕</span></div>
                     </div>
                     <div class="term-lines" style="font-size:17px;">
-                        <p class="t-line"><span class="t-prompt">$</span> {"method":"tools/call","params":{"name":"audit_code"}}</p>
-                        <p class="t-line t-yellow">[1] Parsing untrusted payload via ASTVerifier...</p>
-                        <p class="t-line t-indent t-red">✕ Line 1: Forbidden import 'from os import system'</p>
-                        <p class="t-line t-indent t-red">✕ Line 2: Sandbox breakout dunder '__subclasses__'</p>
-                        <p class="t-line t-cyan">[2] Generating Lockdown A2UI Surface...</p>
+                        <p class="t-line"><span class="t-prompt">$</span> {"method":"tools/call","params":{"name":"create_a2ui_card"}}</p>
+                        <p class="t-line t-yellow">[1] Parsing the payload with ASTVerifier...</p>
+                        <p class="t-line t-indent t-red">[X] Line 1: Forbidden import 'from os import system'</p>
+                        <p class="t-line t-indent t-red">[X] Line 2: Forbidden sandbox breakout attribute '__subclasses__'</p>
+                        <p class="t-line t-indent t-red">[X] Line 2: Forbidden sandbox breakout attribute '__bases__'</p>
+                        <p class="t-line t-indent t-red">[X] Line 2: Forbidden sandbox breakout attribute '__class__'</p>
+                        <p class="t-line t-cyan">[2] Building the JSON card...</p>
                         <p class="t-line t-indent">is_safe      = <span class="t-red">False</span> • violations_list populated</p>
                         <p class="t-line t-indent">Approve Exec = <span class="t-red">disabled=True</span></p>
                         <p class="t-line t-indent">Quarantine   = <span class="t-green">disabled=False [ACTIVE]</span></p>
-                        <div class="t-banner-fail">EXPLOIT BLOCKED PRE-RUN • QUARANTINE SURFACE EMITTED</div>
+                        <div class="t-banner-fail">FLAGGED BEFORE THE HOST RUNS IT • QUARANTINE ENABLED</div>
                     </div>
                 </div>
             </div>
@@ -283,18 +279,17 @@ SCENES = [
     {
         "id": "scene5_verification_and_impact",
         "narration": (
-            "Full Pytest Verification and V-Model Statistical Proof. "
-            "All ten unit tests across test_sentinel_server.py and test_verifier_ast.py pass in zero point zero one seconds, "
-            "certifying MCP initialize, tools list, audit_code, A2UI rendering, os system blocking, subprocess traps, "
-            "eval attacks, sandbox introspection, and syntax error reporting. "
-            "Empirical N equals one hundred V-Model evaluation confirms Cohen's d equals two point one one nine "
-            "and Wald SPRT log-likelihood ratio plus one hundred three point one six."
+            "Test results. "
+            "All ten unit tests across test_sentinel_server.py and test_verifier_ast.py pass in zero point zero one seconds on my machine. "
+            "They cover MCP initialize, tools list, audit_code, card rendering, os system, subprocess, "
+            "eval, sandbox introspection, and syntax errors. "
+            "This is a short denylist, not a sandbox, so code that passes still needs to run somewhere isolated."
         ),
         "html_body": """
             <div class="header">
-                <span class="badge">V-Model Proof • Anna AI + Terminal 3 + Masa 42</span>
-                <h1>10/10 Pytest Suite &amp; N=100 Empirical Verification</h1>
-                <p class="subtitle">Multi-track ready MCP server with formal Stellar Colosseum invariant audit.</p>
+                <span class="badge">Verification • Anna AI App Builder Program</span>
+                <h1>10 Pytest Tests Pass</h1>
+                <p class="subtitle">Run it yourself with one command after cloning the repo.</p>
             </div>
             <div class="grid-2" style="margin-top:18px;gap:26px;">
                 <div class="terminal-window" style="height:640px;">
@@ -319,12 +314,12 @@ SCENES = [
                 </div>
                 <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;height:640px;">
                     <div>
-                        <h3 style="color:#38bdf8;">📊 N=100 V-Model Statistical Profile</h3>
+                        <h3 style="color:#38bdf8;">Measured on my machine</h3>
                         <ul>
-                            <li><strong>Cohen's d Effect Size:</strong> 2.1190 (Threshold ≥ 0.80)</li>
-                            <li><strong>Wald SPRT Log-LR:</strong> +103.16 (<code>accept_h1</code>)</li>
-                            <li><strong>Median Verifier Latency:</strong> 0.0076 ms p50</li>
-                            <li><strong>UI Specification:</strong> Google A2UI 1.0 Declarative JSON</li>
+                            <li><strong>Unit tests:</strong> 10 passed in 0.01s</li>
+                            <li><strong>Median AST check:</strong> 26 µs over 1,000 calls</li>
+                            <li><strong>MCP protocol version:</strong> 2024-11-05</li>
+                            <li><strong>Card:</strong> my own JSON layout, not validated against the A2UI schema</li>
                             <li><strong>GitHub Repository:</strong> <code>manderson240/anna-sentinel-mcp-app</code></li>
                         </ul>
                     </div>
@@ -400,8 +395,8 @@ pre { padding:16px 22px; font-family:"JetBrains Mono","DejaVu Sans Mono",monospa
 <body>
   __BODY__
   <div class="footer">
-    <div class="footer-brand">Anna Sentinel MCP App • Anna AI + Terminal 3 + Masa Subnet 42</div>
-    <div>Zero-Token AST Guardrail + Discrete QAG + A2UI 1.0 • N=100 Cohen's d = 2.1190 • github.com/manderson240/anna-sentinel-mcp-app</div>
+    <div class="footer-brand">Anna Sentinel MCP App • Anna AI App Builder Program</div>
+    <div>AST denylist + claim count + JSON review card • github.com/manderson240/anna-sentinel-mcp-app</div>
   </div>
 </body></html>"""
 
