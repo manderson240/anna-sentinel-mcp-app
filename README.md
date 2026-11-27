@@ -8,7 +8,7 @@ Anna Sentinel checks code and claims before an agent acts on them. It parses Pyt
 
 ## Program dates
 
-The DoraHacks BUIDL window closes on November 30, 2026 at 15:59 UTC. The organizer's grants depend on two things: the app is published on the Anna Marketplace as an installable `#mention` app, and it reaches 200 or more Qualified App monthly active users. Qualification is open until March 31, 2027. This repo is the code. The Marketplace listing needs an Anna Developer Account, which I have not created yet, so nothing here is published or has users.
+The DoraHacks BUIDL window closes on November 30, 2026 at 15:59 UTC. The organizer's grants depend on two things: the app is published on the Anna Marketplace as an installable `#mention` app, and it reaches 200 or more Qualified App monthly active users. Qualification is open until March 31, 2027. This repo is the code. I have an Anna Developer Account. The app is not yet published on the Marketplace and has no users.
 
 ## Quickstart
 
