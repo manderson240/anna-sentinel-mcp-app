@@ -1,6 +1,6 @@
 [project]
 name = "anna-sentinel-mcp-app"
-version = "1.1.0"
+version = "1.1.1"
 description = "Static AST Python Verifier, Claim Checker & Anna Executa Plugin"
 readme = "README.md"
 requires-python = ">=3.11"

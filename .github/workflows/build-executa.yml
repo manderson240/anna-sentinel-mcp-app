@@ -33,7 +33,7 @@ jobs:
       - name: Package
         shell: bash
         run: |
-          bin=$(ls dist/anna-sentinel dist/anna-sentinel.exe 2>/dev/null | head -1)
+          bin=dist/anna-sentinel; [ -f "$bin" ] || bin=dist/anna-sentinel.exe
           python scripts/package_executa.py "$bin" "${{ matrix.platform }}" out
       - uses: actions/upload-artifact@v4
         with:

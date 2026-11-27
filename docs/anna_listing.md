@@ -30,4 +30,4 @@ Nothing is stored and nothing leaves the process unless you turn on the Ollama o
 
 ## Version
 
-Version 1.1.0. Changelog text: First release as an installable Anna App with a bundled Executa.
+Version 1.1.1. Changelog text: First release as an installable Anna App with a bundled Executa.

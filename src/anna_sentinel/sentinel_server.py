@@ -34,7 +34,7 @@ def handle_initialize(req_id: Any) -> dict[str, Any]:
         "result": {
             "protocolVersion": "2024-11-05",
             "capabilities": {"tools": {}},
-            "serverInfo": {"name": "anna-sentinel-mcp-app", "version": "1.1.0"},
+            "serverInfo": {"name": "anna-sentinel-mcp-app", "version": "1.1.1"},
         },
     }
 
