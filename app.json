@@ -1,7 +1,7 @@
 {
   "name": "Anna Sentinel",
   "slug": "anna-sentinel",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "tagline": "Check Python code and claims before an agent acts on them.",
   "description": "Anna Sentinel audits Python snippets with a static AST check, compares claims against a source text, and signs an HMAC receipt for each audited snippet. Mention it before you run code an agent wrote.",
   "category": "developer-tools",

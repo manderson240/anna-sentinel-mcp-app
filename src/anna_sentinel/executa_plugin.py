@@ -16,7 +16,7 @@ from anna_sentinel.verifier_ast import audit_source
 EXECUTA_MANIFEST: dict[str, Any] = {
     "name": "anna-sentinel",
     "display_name": "Anna Sentinel Code & Claim Verifier",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Static AST Python code safety auditor, source-grounded claim checker, and HMAC receipt verifier.",
     "author": "Mike Anderson",
     "tools": [

@@ -57,11 +57,11 @@ Commands I run, in order. You need Node 22 or newer and uv.
 npm install -g @anna-ai/cli
 anna-app login --host https://anna.partners          # approve in the browser
 anna-app account set-handle YOUR_HANDLE              # once, before the first app
-git tag v1.1.1 && git push origin v1.1.1             # workflow builds the 5 archives into a GitHub Release
+git tag v1.1.2 && git push origin v1.1.2             # workflow builds the 5 archives into a GitHub Release
 anna-app validate --strict
 anna-app apps publish                                # push, cut and mirror the binaries from the release
 anna-app apps submit-review
-anna-app apps release 1.1.1                          # after review approves the app
+anna-app apps release 1.1.2                          # after review approves the app
 ```
 
 Before the first publish I activate developer access in the Developer Console at `/developer` and fill the Listing tab from `docs/anna_listing.md`. Anna's docs say a reviewer approves the app, so it is not live until that happens.

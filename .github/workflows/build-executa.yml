@@ -16,7 +16,7 @@ jobs:
         include:
           - { os: ubuntu-latest, platform: linux-x86_64 }
           - { os: ubuntu-24.04-arm, platform: linux-aarch64 }
-          - { os: macos-14, platform: darwin-arm64 }
+          - { os: macos-15, platform: darwin-arm64 }
           - { os: macos-15-intel, platform: darwin-x86_64 }
           - { os: windows-latest, platform: windows-x86_64 }
     runs-on: ${{ matrix.os }}
@@ -33,7 +33,7 @@ jobs:
       - name: Package
         shell: bash
         run: |
-          bin=dist/anna-sentinel; [ -f "$bin" ] || bin=dist/anna-sentinel.exe
+          bin=dist/anna-sentinel; case "${{ matrix.platform }}" in windows*) bin="$bin.exe" ;; esac
           python scripts/package_executa.py "$bin" "${{ matrix.platform }}" out
       - uses: actions/upload-artifact@v4
         with:
