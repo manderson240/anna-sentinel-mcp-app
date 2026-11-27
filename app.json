@@ -1,0 +1,15 @@
+{
+  "name": "Anna Sentinel",
+  "slug": "anna-sentinel",
+  "version": "1.1.0",
+  "tagline": "Check Python code and claims before an agent acts on them.",
+  "description": "Anna Sentinel audits Python snippets with a static AST check, compares claims against a source text, and signs an HMAC receipt for each audited snippet. Mention it before you run code an agent wrote.",
+  "category": "developer-tools",
+  "pricing_model": "free",
+  "homepage_url": "https://github.com/manderson240/anna-sentinel-mcp-app",
+  "support_url": "https://github.com/manderson240/anna-sentinel-mcp-app/issues",
+  "privacy_url": "https://github.com/manderson240/anna-sentinel-mcp-app/blob/main/PRIVACY.md",
+  "bundled_executas": {
+    "anna-sentinel": { "path": "executas/anna-sentinel" }
+  }
+}

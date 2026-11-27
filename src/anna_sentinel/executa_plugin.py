@@ -31,7 +31,7 @@ EXECUTA_MANIFEST: dict[str, Any] = {
             "name": "verify_claims",
             "description": "Verify claim statements against source_text.",
             "parameters": [
-                {"name": "claims", "type": "array", "description": "List of claim strings", "required": True},
+                {"name": "claims", "type": "array", "description": "List of claim strings", "items_type": "string", "required": True},
                 {"name": "source_text", "type": "string", "description": "Ground-truth text", "required": False},
                 {"name": "use_model", "type": "boolean", "description": "Ask an Ollama model instead of word overlap", "required": False},
             ],
@@ -50,10 +50,12 @@ EXECUTA_MANIFEST: dict[str, Any] = {
             "parameters": [
                 {"name": "source_code", "type": "string", "description": "Python source code", "required": True},
                 {"name": "source_text", "type": "string", "description": "Ground-truth text", "required": False},
-                {"name": "claims", "type": "array", "description": "List of claim strings", "required": False},
+                {"name": "claims", "type": "array", "description": "List of claim strings", "items_type": "string", "required": False},
             ],
         },
     ],
+    "credentials": [],
+    "runtime": {"type": "binary"},
 }
 
 
@@ -85,6 +87,14 @@ def invoke_tool(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
 def handle_executa_request(req: dict[str, Any]) -> dict[str, Any]:
     """Handle one Anna Executa wire protocol request."""
     method = req.get("method")
+    if method == "initialize":
+        return {
+            "result": {
+                "protocolVersion": "2.0",
+                "server_info": {"name": EXECUTA_MANIFEST["name"], "version": EXECUTA_MANIFEST["version"]},
+                "capabilities": {},
+            }
+        }
     if method == "describe":
         return {"result": EXECUTA_MANIFEST}
     if method == "health":
@@ -102,6 +112,9 @@ def handle_executa_request(req: dict[str, Any]) -> dict[str, Any]:
 
 
 def main() -> None:
+    """Read one JSON request per line until stdin closes. Stdout carries frames only."""
+    sys.stdin.reconfigure(encoding="utf-8")
+    sys.stdout.reconfigure(encoding="utf-8")
     for line in sys.stdin:
         line = line.strip()
         if not line:
@@ -111,6 +124,8 @@ def main() -> None:
         except json.JSONDecodeError as exc:
             resp: dict[str, Any] = {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": str(exc)}}
         else:
+            if not isinstance(req, dict):
+                req = {}
             payload = handle_executa_request(req)
             resp = {"jsonrpc": "2.0", "id": req.get("id"), **payload}
         sys.stdout.write(json.dumps(resp) + "\n")

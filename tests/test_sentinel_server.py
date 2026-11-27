@@ -119,7 +119,7 @@ def test_executa_plugin_describe_health_and_invoke() -> None:
 
 
 def test_anna_app_manifest_schema_v4_keys() -> None:
-    manifest_path = Path(__file__).resolve().parents[1] / "anna_app_manifest.json"
+    manifest_path = Path(__file__).resolve().parents[1] / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     allowed_top_keys = {
         "schema",
@@ -134,7 +134,7 @@ def test_anna_app_manifest_schema_v4_keys() -> None:
     }
     assert manifest["schema"] == 4
     assert set(manifest.keys()).issubset(allowed_top_keys)
-    assert manifest["required_executas"][0]["tool_id"] == "anna-sentinel"
+    assert manifest["required_executas"][0]["tool_id"] == "bundled:anna-sentinel"
 
 
 def test_a2ui_render() -> None:

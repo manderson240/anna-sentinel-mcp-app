@@ -1,0 +1,54 @@
+name: build-executa
+# Builds the Executa binary for each platform key Anna lists and attaches the archives to a GitHub Release on a v* tag.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, platform: linux-x86_64 }
+          - { os: ubuntu-24.04-arm, platform: linux-aarch64 }
+          - { os: macos-14, platform: darwin-arm64 }
+          - { os: macos-15-intel, platform: darwin-x86_64 }
+          - { os: windows-latest, platform: windows-x86_64 }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pyinstaller
+      - run: pyinstaller --onefile --name anna-sentinel --paths src src/anna_sentinel/executa_plugin.py
+      - name: Smoke test describe
+        shell: bash
+        run: echo '{"jsonrpc":"2.0","id":1,"method":"describe"}' | ./dist/anna-sentinel* | python -c "import sys,json; assert json.loads(sys.stdin.readline())['result']['name']=='anna-sentinel'"
+      - name: Package
+        shell: bash
+        run: |
+          bin=$(ls dist/anna-sentinel dist/anna-sentinel.exe 2>/dev/null | head -1)
+          python scripts/package_executa.py "$bin" "${{ matrix.platform }}" out
+      - uses: actions/upload-artifact@v4
+        with:
+          name: anna-sentinel-${{ matrix.platform }}
+          path: out/anna-sentinel-*
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: out
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: out/anna-sentinel-*

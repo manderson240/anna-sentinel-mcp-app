@@ -47,12 +47,31 @@ Real output of the second command, trimmed to the audit (`elapsed_us` varies per
 
 The same response carries an attestation object with `payload_hash`, `signature`, `timestamp` and `verified`. The `describe` call lists `audit_code`, `verify_claims`, `verify_receipt` and `create_a2ui_card`, the same four tools and arguments as the MCP server.
 
+## Install in Anna
+
+The layout follows the organizer's [Anna App docs](https://anna.partners/llms.txt). `app.json` lists the bundled Executa, `executas/anna-sentinel/` holds its `executa.json` and `manifest.json`, and `.github/workflows/build-executa.yml` builds one binary per platform on a `v*` tag. Listing text is in `docs/anna_listing.md`.
+
+Commands I run, in order. You need Node 22 or newer and uv.
+
+```bash
+npm install -g @anna-ai/cli
+anna-app login --host https://anna.partners          # approve in the browser
+anna-app account set-handle YOUR_HANDLE              # once, before the first app
+git tag v1.1.0 && git push origin v1.1.0             # workflow builds the 5 archives into a GitHub Release
+anna-app validate --strict
+anna-app apps publish                                # push, cut and mirror the binaries from the release
+anna-app apps submit-review
+anna-app apps release 1.1.0                          # after review approves the app
+```
+
+Before the first publish I activate developer access in the Developer Console at `/developer` and fill the Listing tab from `docs/anna_listing.md`. Anna's docs say a reviewer approves the app, so it is not live until that happens.
+
 ## How it works
 
 1. **AST audit.** `src/anna_sentinel/verifier_ast.py` walks the parse tree. It blocks a list of modules (`os`, `subprocess`, `socket`, `ctypes`, `pickle` and others), including aliased and wildcard imports. It blocks calls such as `eval`, `exec`, `open` and `getattr`, a set of `os` execution functions, dunder attributes such as `__subclasses__` and `__mro__`, and `while True:` loops. The result lists violations and reports `elapsed_us` and `nodes_visited`.
 2. **Claim check.** `verify_claims_against_source` in `src/anna_sentinel/mock_hub.py` scores each claim by token overlap with the source text and flags a mismatch in negation. With `use_model=true` it asks a model served by Ollama instead. That path needs a running Ollama server and is not covered by the offline tests.
 3. **Receipt.** `audit_code` returns a SHA-256 payload hash and an HMAC-SHA256 signature. `verify_receipt` recomputes both and compares with `hmac.compare_digest`. The key comes from `ANNA_SENTINEL_SECRET_KEY`.
-4. **Anna surface.** `executa_plugin.py` speaks the Executa JSON-RPC calls `describe`, `health` and `invoke`. `anna_app_manifest.json` is the Schema v4 manifest. `a2ui_renderer.py` builds a JSON review card.
+4. **Anna surface.** `executa_plugin.py` speaks the Executa JSON-RPC calls `describe`, `health` and `invoke`. `manifest.json` is the Schema v4 App manifest and `app.json` holds the store metadata. `a2ui_renderer.py` builds a JSON review card.
 
 ## Configuration
 
@@ -67,7 +86,7 @@ The same response carries an attestation object with `payload_hash`, `signature`
 uv run pytest -q
 ```
 
-This prints `36 passed`. `tests/test_verifier_ast.py` covers a safe snippet, a syntax error, 21 bypass attempts and the antonym limit. `tests/test_sentinel_server.py` covers the MCP lifecycle, claims against a source text, a valid and a tampered receipt, the Executa calls, a check that MCP and Executa list the same tools and arguments, the manifest keys and the A2UI card.
+This prints `41 passed`. `tests/test_verifier_ast.py` covers a safe snippet, a syntax error, 21 bypass attempts and the antonym limit. `tests/test_anna_app.py` checks that `app.json`, `manifest.json`, the Executa files, the version numbers and the release URLs agree, and that the plugin writes one JSON line per request and keeps reading stdin. `tests/test_sentinel_server.py` covers the MCP lifecycle, claims against a source text, a valid and a tampered receipt, the Executa calls, a check that MCP and Executa list the same tools and arguments, the manifest keys and the A2UI card.
 
 ## Limits
 

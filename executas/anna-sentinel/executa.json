@@ -1,0 +1,22 @@
+{
+  "slug": "anna-sentinel",
+  "name": "Anna Sentinel Code & Claim Verifier",
+  "version": "1.1.0",
+  "executa_type": "tool",
+  "description": "Static AST Python code safety auditor, source-grounded claim checker, and HMAC receipt verifier.",
+  "tool_id": "tool-dev-anna-sentinel",
+  "type": "python",
+  "command": ["uv", "run", "--project", "../..", "anna-sentinel-executa"],
+  "distribution": {
+    "type": "binary",
+    "executable_name": "anna-sentinel",
+    "supports_protocol": true,
+    "binary_urls": {
+      "linux-x86_64": { "url": "https://github.com/manderson240/anna-sentinel-mcp-app/releases/download/v1.1.0/anna-sentinel-linux-x86_64.tar.gz", "entrypoint": "bin/anna-sentinel", "format": "tar.gz" },
+      "linux-aarch64": { "url": "https://github.com/manderson240/anna-sentinel-mcp-app/releases/download/v1.1.0/anna-sentinel-linux-aarch64.tar.gz", "entrypoint": "bin/anna-sentinel", "format": "tar.gz" },
+      "darwin-arm64": { "url": "https://github.com/manderson240/anna-sentinel-mcp-app/releases/download/v1.1.0/anna-sentinel-darwin-arm64.tar.gz", "entrypoint": "bin/anna-sentinel", "format": "tar.gz" },
+      "darwin-x86_64": { "url": "https://github.com/manderson240/anna-sentinel-mcp-app/releases/download/v1.1.0/anna-sentinel-darwin-x86_64.tar.gz", "entrypoint": "bin/anna-sentinel", "format": "tar.gz" },
+      "windows-x86_64": { "url": "https://github.com/manderson240/anna-sentinel-mcp-app/releases/download/v1.1.0/anna-sentinel-windows-x86_64.zip", "entrypoint": "bin/anna-sentinel.exe", "format": "zip" }
+    }
+  }
+}

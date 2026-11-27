@@ -1,17 +1,9 @@
 {
   "schema": 4,
   "required_executas": [
-    {
-      "tool_id": "anna-sentinel",
-      "min_version": "1.1.0"
-    }
+    { "tool_id": "bundled:anna-sentinel", "min_version": "1.1.0", "version": "latest" }
   ],
-  "tags": [
-    "security",
-    "code-audit",
-    "verification",
-    "ast"
-  ],
+  "tags": ["security", "code-audit", "verification", "ast"],
   "system_prompt_addendum": "Before recommending or running user-generated Python code, invoke the anna-sentinel audit_code tool on the exact snippet and reject snippets with safety violations.",
-  "user_message_prefix_template": "Verify with anna-sentinel before executing:"
+  "user_message_prefix_template": "Verify with anna-sentinel before executing: {user_message}"
 }

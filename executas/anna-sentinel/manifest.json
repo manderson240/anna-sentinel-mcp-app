@@ -1,0 +1,93 @@
+{
+  "name": "anna-sentinel",
+  "display_name": "Anna Sentinel Code & Claim Verifier",
+  "version": "1.1.0",
+  "description": "Static AST Python code safety auditor, source-grounded claim checker, and HMAC receipt verifier.",
+  "author": "Mike Anderson",
+  "tools": [
+    {
+      "name": "audit_code",
+      "description": "Audit Python code using static AST checks and return an HMAC attestation receipt.",
+      "parameters": [
+        {
+          "name": "source_code",
+          "type": "string",
+          "description": "Python source code",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "verify_claims",
+      "description": "Verify claim statements against source_text.",
+      "parameters": [
+        {
+          "name": "claims",
+          "type": "array",
+          "description": "List of claim strings",
+          "items_type": "string",
+          "required": true
+        },
+        {
+          "name": "source_text",
+          "type": "string",
+          "description": "Ground-truth text",
+          "required": false
+        },
+        {
+          "name": "use_model",
+          "type": "boolean",
+          "description": "Ask an Ollama model instead of word overlap",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "verify_receipt",
+      "description": "Verify an HMAC-SHA256 attestation receipt against source_code.",
+      "parameters": [
+        {
+          "name": "source_code",
+          "type": "string",
+          "description": "Original source",
+          "required": true
+        },
+        {
+          "name": "receipt",
+          "type": "object",
+          "description": "Receipt object",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "create_a2ui_card",
+      "description": "Generate a declarative JSON review card for audit and claim results.",
+      "parameters": [
+        {
+          "name": "source_code",
+          "type": "string",
+          "description": "Python source code",
+          "required": true
+        },
+        {
+          "name": "source_text",
+          "type": "string",
+          "description": "Ground-truth text",
+          "required": false
+        },
+        {
+          "name": "claims",
+          "type": "array",
+          "description": "List of claim strings",
+          "items_type": "string",
+          "required": false
+        }
+      ]
+    }
+  ],
+  "credentials": [],
+  "runtime": {
+    "type": "binary"
+  }
+}
