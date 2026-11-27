@@ -100,7 +100,7 @@ This prints `41 passed`. `tests/test_verifier_ast.py` covers a safe snippet, a s
 
 ## Future roadmap
 
-Create the Anna Developer Account, publish the app, and then measure Qualified App MAU against the 200 threshold.
+Publish the app on the Anna Marketplace, and then measure Qualified App MAU against the 200 threshold.
 
 ## Hackathon deliverables
 

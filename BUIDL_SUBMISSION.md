@@ -56,4 +56,4 @@ The AST audit is static and is not a sandbox, and its module list is a blocklist
 
 ### Future roadmap
 
-Create the Anna Developer Account, publish the app, and then measure Qualified App MAU.
+Publish the app on the Anna Marketplace, and then measure Qualified App MAU.
